@@ -4,7 +4,7 @@ This repo will convert books from libgen to plain txt format.  This repo does no
 
 The scripts use a seedbox to download the libgen torrents, copy them to your machine/cloud instance, convert them to text, and enrich them with metadata.  Processing will be by chunk, with configurable parallelization.
 
-It currently only works for the libgen rs nonfiction section, but PRs welcome for additional compatibility.  It will cost about $300 to convert all of libgen rs nonfiction if you're using a cloud instance, and take about 1 week to process everything (bandwidth-bound).  You will need 4TB of disk space.
+It currently only works for the libgen rs nonfiction section, but PRs welcome for additional compatibility.  It will cost about $300 to convert all of libgen rs nonfiction if you're using a cloud instance, and take about 1 week to process everything (bandwidth-bound).  You will need 3TB of disk space.
 
 ## Install
 
@@ -18,7 +18,7 @@ This was only tested on Ubuntu 23.04 and Python 3.11.  It should work with Pytho
 
 ### Import libgen rs metadata
 
-- Download [the metadata DB](https://data.library.bz/dbdumps/libgen.rar)
+- Download [the metadata DB](https://annas-archive.org/datasets/libgen_rs) (look for "metadata" and the nonfiction one)
 - `bsdtar -xf libgen.rar`
 - Start mariadb
   - `systemctl start mariadb.service`
@@ -47,9 +47,8 @@ This was only tested on Ubuntu 23.04 and Python 3.11.  It should work with Pytho
 
 ## Usage
 
-- `python download_and_clean.py` to download torrents from libgen rs
+- `python download_and_clean.py` to download and clean the data
   - `--workers` to control number of download workers
   - `--max` controls how many chunks at most to process (for testing)
 
 You should see progress information printed out - it will take several days to weeks to finish depending on bandwidth.  Check the `txt` and `processed` folders to monitor.
-
