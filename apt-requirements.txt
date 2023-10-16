@@ -1,0 +1,4 @@
+libarchive-tools
+libmagic1
+djvulibre-bin
+mariadb-server

@@ -1,0 +1,12 @@
+scikit-learn
+numpy
+pymupdf
+putio.py
+ebooklib
+html2text
+PyMySQL
+python-magic
+tqdm
+python-dotenv
+pydantic
+pydantic-settings
