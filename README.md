@@ -31,6 +31,8 @@ This was only tested on Ubuntu 23.04 and Python 3.11.  It should work with Pytho
 - Import metadata
   - `git clone https://annas-software.org/AnnaArchivist/annas-archive.git`
   - `pv libgen.sql  | PYTHONIOENCODING=UTF8:ignore python3 annas-archive/data-imports/scripts/helpers/sanitize_unicode.py | mariadb -h localhost --default-character-set=utf8mb4 -u libgen -ppassword libgen`
+    - You may need to add the `--binary-mode -o` flag to the `mariadb` command above
+    - And the `--force` flag if you get errors
 
 ### Setup seedbox
 
