@@ -1,5 +1,6 @@
 from dotenv import find_dotenv
 from pydantic_settings import BaseSettings
+import fitz as pymupdf
 
 
 class Settings(BaseSettings):
@@ -16,9 +17,14 @@ class Settings(BaseSettings):
     # Download settings
     BATCH_SIZE: int = 100 # Number of pdfs to process in a single worker
     CONVERSION_WORKERS: int = 4 # Number of workers to use to convert pdfs for each libgen chunk
-    DOWNLOAD_WORKERS: int = 40 # Number of download workers (bandwidth-bound)
+    DOWNLOAD_WORKERS: int = 8 # Number of download workers (bandwidth-bound)
     MAX_TIME_TO_WAIT: int = 60 * 60 * 6  # 6 hours to wait for a download to finish
     RCLONE_ADAPTER_NAME: str = "putio"
+
+    # Conversion to markdown
+    TEXT_FLAGS: int = pymupdf.TEXTFLAGS_TEXT & ~pymupdf.TEXT_PRESERVE_LIGATURES
+    CONVERSION_METHOD: str = "naive" # Either naive or marker.  Naive is faster, but marker is more accurate.
+    GPU_COUNT: int = 0 # Number of GPUs to use for marker.  0 means to use CPU only
 
     # Put io
     PUTIO_TOKEN: str = ""

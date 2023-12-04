@@ -52,5 +52,6 @@ This was only tested on Ubuntu 23.04 and Python 3.11.  It should work with Pytho
 - `python download_and_clean.py` to download and clean the data
   - `--workers` to control number of download workers
   - `--max` controls how many chunks at most to process (for testing)
+  - `--no_download` to only process libgen chunks that exist on the seedback
 
 You should see progress information printed out - it will take several days to weeks to finish depending on bandwidth.  Check the `txt` and `processed` folders to monitor.
