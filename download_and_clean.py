@@ -10,6 +10,7 @@ import os
 from tqdm import tqdm
 
 from libgen_to_txt.files import get_file_path, download_folder, download_folder_locally, delete_file_locally
+from libgen_to_txt.marker.convert import process_folder_marker
 from libgen_to_txt.metadata import batch_write_metadata
 from libgen_to_txt.naive.convert import process_batch_files_naive
 from libgen_to_txt.settings import settings
@@ -33,17 +34,20 @@ def process_single_libgen_chunk(torrent_info, conversion_lock, no_download, max_
     out_path = os.path.join(settings.BASE_TXT_FOLDER, num)
     os.makedirs(out_path, exist_ok=True)
 
-    match settings.CONVERSION_METHOD:
-        case "naive":
-            # PDF -> markdown
-            process_batch_files_naive(files, stored_path, out_path, max_workers)
-            # Write metadata
-            batch_write_metadata(files, out_path, max_workers)
-        case "marker":
-            pass
-        case _:
-            print(f"Unknown conversion method {settings.CONVERSION_METHOD}")
-            return
+    # Only one chunk can be converted at once
+    with conversion_lock:
+        match settings.CONVERSION_METHOD:
+            case "naive":
+                # PDF -> markdown
+                process_batch_files_naive(files, stored_path, out_path, max_workers)
+                # Write metadata
+                batch_write_metadata(files, out_path, max_workers)
+            case "marker":
+                # PDF -> markdown
+                process_folder_marker(stored_path, out_path, num, max_workers)
+            case _:
+                print(f"Unknown conversion method {settings.CONVERSION_METHOD}")
+                return
 
     # Mark that we have processed this segment of libgen
     with open(os.path.join(settings.BASE_PROCESSED_FOLDER, num), "w+") as f:

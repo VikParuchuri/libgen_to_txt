@@ -1,6 +1,6 @@
 # Libgen to txt
 
-This repo will convert books from libgen to plain txt format.  This repo does not contain any books, only the scripts to download and convert them.
+This repo will convert books from libgen to plain txt or markdown format.  This repo does not contain any books, only the scripts to download and convert them.
 
 The scripts use a seedbox to download the libgen torrents, copy them to your machine/cloud instance, convert them to text, and enrich them with metadata.  Processing will be by chunk, with configurable parallelization.
 
@@ -44,7 +44,7 @@ This was only tested on Ubuntu 23.04 and Python 3.11.  It should work with Pytho
 
 - Get a putio oauth token following [these instructions](https://help.put.io/en/articles/5972538-how-to-get-an-oauth-token-from-put-io)
 - Either set the env var `PUTIO_TOKEN`, or create a `local.env` file with `PUTIO_TOKEN=yourtoken`
-- Inspect `settings.py`.  You can edit settings directly to override them, set an env var, or add the key to a `local.env` file.
+- Inspect `libgen_to_txt/settings.py`.  You can edit settings directly to override them, set an env var, or add the key to a `local.env` file.
   - You may particularly want to look at `CONVERSION_WORKERS` and `DOWNLOAD_WORKERS` to control parallelization.  The download step is the limiting factor, and too many download workers will saturate your bandwidth.
 
 ## Usage
@@ -55,3 +55,7 @@ This was only tested on Ubuntu 23.04 and Python 3.11.  It should work with Pytho
   - `--no_download` to only process libgen chunks that exist on the seedback
 
 You should see progress information printed out - it will take several days to weeks to finish depending on bandwidth.  Check the `txt` and `processed` folders to monitor.
+
+### Markdown conversion
+
+This can optionally be integrated with [marker](https://www.github.com/VikParuchuri/marker) to do high-accuracy pdf to markdown conversion.  To use marker, first install it, then adjust the `CONVERSION_METHOD` setting and the other marker settings.

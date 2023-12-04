@@ -24,7 +24,7 @@ def write_metadata(fmd5, out_folder_path):
     metadata = query_metadata(fmd5)
     if metadata is None:
         metadata = {}
-    metadata_filepath = os.path.join(out_folder_path, f"{fmd5}_libgen_meta.json")
+    metadata_filepath = os.path.join(out_folder_path, f"{fmd5}_meta.json")
 
     with open(metadata_filepath, "w+") as f:
         f.write(json.dumps(metadata))
