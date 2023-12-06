@@ -63,7 +63,7 @@ def process_single_libgen_chunk(torrent_info, conversion_lock, no_download, no_d
 def try_process_single_libgen_chunk(torrent_info, lock, options):
     try:
         no_download = options["no_download"]
-        no_delete = options["no_delete"]
+        no_delete = options["no_local_delete"]
         process_single_libgen_chunk(torrent_info, lock, no_download, no_delete)
     except Exception as e:
         print(f"Failed to process {torrent_info}: {e}")
@@ -74,7 +74,7 @@ if __name__ == "__main__":
     parser.add_argument("--max", type=int, default=None, help="Maximum number of chunks to process, for testing")
     parser.add_argument("--workers", type=int, default=settings.DOWNLOAD_WORKERS, help="Number of workers to use when downloading")
     parser.add_argument("--no_download", action="store_true", help="Only process what already exists on the seedbox", default=False)
-    parser.add_argument("--no_delete", action="store_true", help="Do not delete files locally", default=False)
+    parser.add_argument("--no_local_delete", action="store_true", help="Do not delete files locally", default=False)
     args = parser.parse_args()
 
     os.makedirs(settings.BASE_STORAGE_FOLDER, exist_ok=True)
@@ -104,5 +104,4 @@ if __name__ == "__main__":
     else:
         with ProcessPoolExecutor(max_workers=args.workers) as pool:
             tqdm(pool.map(try_process_single_libgen_chunk, torrent_urls, repeat(lock), repeat(args_dict), chunksize=1), total=len(torrent_urls))
-        pool.shutdown()
 

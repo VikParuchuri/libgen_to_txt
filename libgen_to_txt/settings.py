@@ -30,13 +30,13 @@ class Settings(BaseSettings):
     # Marker
     GPU_COUNT: int = 0 # Number of GPUs to use for marker.  0 means to use CPU only
     MARKER_FOLDER: str = "../marker"
-    MARKER_GPU_TIMEOUT: int = 60 * 60 * 6 # 6 hours to wait for marker to finish
-    MARKER_CPU_TIMEOUT: int = 60 * 60 * 24 # 24 hours to wait for marker to finish
+    MARKER_GPU_TIMEOUT: int = 60 * 60 * 8 # Time to wait for marker gpu to finish
+    MARKER_CPU_TIMEOUT: int = 60 * 60 * 24 # Time to wait for marker to finish
     MARKER_SUPPORTED_LANGUAGES: List = ["English", "Spanish", "Portuguese", "French", "German", "Russian"]
     MARKER_SUPPORTED_EXTENSIONS: List = ["pdf", "epub", "mobi", "xps", "fb2"]
     MARKER_MIN_LENGTH: int = 10000 # Min amount of text to extract from file naively before using marker
     MARKER_DEBUG_DATA_FOLDER: Optional[str] = None # Folder to store debug data in
-    POETRY_DIR: str = "~/.local/bin" # Poetry directory for marker
+    POETRY_DIR: str = "~/.local/bin" # Poetry directory, used to activate marker venv
 
     # Put io
     PUTIO_TOKEN: str = ""
