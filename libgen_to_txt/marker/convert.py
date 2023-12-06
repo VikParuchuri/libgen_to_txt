@@ -1,5 +1,8 @@
 import subprocess
 import os
+
+import psutil
+
 from libgen_to_txt.settings import settings
 
 from libgen_to_txt.metadata import query_metadata
@@ -27,18 +30,32 @@ def filter_invalid(folder_name):
     return all_metadata
 
 
+def wait_for_process(process, timeout, stored_path):
+    try:
+        process.wait(timeout=timeout)
+    except subprocess.TimeoutExpired:
+        print("Process timed out. Terminating.")
+        parent = psutil.Process(process.pid)
+        for child in parent.children(recursive=True):
+            child.kill()
+        process.kill()
+
+    if process.returncode and process.returncode != 0:
+        print(f"Conversion has an error for {stored_path}.")
+
+
 def marker_cpu(stored_path, out_path, metadata_file, max_workers):
     # Do not recommend using marker on CPU, will be very slow for libgen
     marker_dir = os.path.abspath(settings.MARKER_FOLDER)
-    command = ["python", "convert.py", stored_path, out_path, "--workers", str(max_workers), "--metadata_file", metadata_file, "--min_length", str(settings.MARKER_MIN_LENGTH)]
+    command = f"poetry run python convert.py {stored_path} {out_path} --workers {max_workers} --metadata_file {metadata_file} --min_length {settings.MARKER_MIN_LENGTH}"
     subprocess.run(command, timeout=settings.MARKER_CPU_TIMEOUT, cwd=marker_dir, shell=True, check=True)
+    process = subprocess.Popen(command, cwd=marker_dir, shell=True)
+    wait_for_process(process, settings.MARKER_CPU_TIMEOUT, stored_path)
 
 
 def marker_gpu(stored_path, out_path, metadata_file, max_workers):
     marker_dir = os.path.abspath(settings.MARKER_FOLDER)
     command = f"poetry run bash chunk_convert.sh {stored_path} {out_path}"
-    print(marker_dir)
-    print(command)
     poetry_path = os.path.expanduser(settings.POETRY_DIR)
     full_path = os.environ['PATH'] + os.pathsep + poetry_path
     env = {
@@ -52,7 +69,8 @@ def marker_gpu(stored_path, out_path, metadata_file, max_workers):
     if settings.MARKER_DEBUG_DATA_FOLDER:
         env["DEBUG_DATA_FOLDER"] = settings.MARKER_DEBUG_DATA_FOLDER
 
-    subprocess.run(command, timeout=settings.MARKER_GPU_TIMEOUT, env=env, cwd=marker_dir, shell=True, check=True)
+    process = subprocess.Popen(command, env=env, cwd=marker_dir, shell=True)
+    wait_for_process(process, settings.MARKER_GPU_TIMEOUT, stored_path)
 
 
 def process_folder_marker(stored_path, out_path, num, max_workers):
