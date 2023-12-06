@@ -6,17 +6,17 @@ The scripts use a seedbox to download the libgen torrents, copy them to your mac
 
 It currently only works for the libgen rs nonfiction section, but PRs welcome for additional compatibility.  It will cost about $300 to convert all of libgen rs nonfiction if you're using a cloud instance, and take about 1 week to process everything (bandwidth-bound).  You will need 3TB of disk space.
 
-## Install
+# Install
 
 This was only tested on Ubuntu 23.04 and Python 3.11.  It should work with Python 3.8+.
 
-### Setup dependencies
+## Setup dependencies
 
 - `apt-get update`
 - `xargs apt-get install -y < apt-requirements.txt`
 - `pip install -r requirements.txt`
 
-### Import libgen rs metadata
+## Import libgen rs metadata
 
 - Download [the metadata DB](https://annas-archive.org/datasets/libgen_rs) (look for "metadata" and the nonfiction one)
 - `bsdtar -xf libgen.rar`
@@ -34,20 +34,20 @@ This was only tested on Ubuntu 23.04 and Python 3.11.  It should work with Pytho
     - You may need to add the `--binary-mode -o` flag to the `mariadb` command above
     - And the `--force` flag if you get errors
 
-### Setup seedbox
+## Setup seedbox
 
 - Make an account on [put.io](https://put.io)
 - Install rclone following [these instructions](https://rclone.org/install/)
 - Create a [putio adapter](https://rclone.org/putio/) for rclone
 
-### Modify settings
+# Configuration
 
 - Get a putio oauth token following [these instructions](https://help.put.io/en/articles/5972538-how-to-get-an-oauth-token-from-put-io)
 - Either set the env var `PUTIO_TOKEN`, or create a `local.env` file with `PUTIO_TOKEN=yourtoken`
 - Inspect `libgen_to_txt/settings.py`.  You can edit settings directly to override them, set an env var, or add the key to a `local.env` file.
   - You may particularly want to look at `CONVERSION_WORKERS` and `DOWNLOAD_WORKERS` to control parallelization.  The download step is the limiting factor, and too many download workers will saturate your bandwidth.
 
-## Usage
+# Usage
 
 - `python download_and_clean.py` to download and clean the data
   - `--workers` to control number of download workers
@@ -56,6 +56,15 @@ This was only tested on Ubuntu 23.04 and Python 3.11.  It should work with Pytho
 
 You should see progress information printed out - it will take several days to weeks to finish depending on bandwidth.  Check the `txt` and `processed` folders to monitor.
 
-### Markdown conversion
+## Markdown conversion
 
 This can optionally be integrated with [marker](https://www.github.com/VikParuchuri/marker) to do high-accuracy pdf to markdown conversion.  To use marker, first install it, then adjust the `CONVERSION_METHOD` setting and the other marker settings.
+
+## Cloud storage
+
+You can store the converted txt/markdown files in a s3-compatible storage backend using `s3fs`.  Here's how:
+
+- `sudo apt install s3fs`
+- `echo ACCESS_KEY_ID:SECRET_ACCESS_KEY > ${HOME}/.passwd-s3fs`
+- `chmod 600 ${HOME}/.passwd-s3fs`
+- `s3fs BUCKET_NAME LOCAL_DIR -o url=STORAGE_URL -o use_cache=/tmp -o allow_other -o use_path_request_style -o uid=1000 -o gid=1000 -o passwd_file=${HOME}/.passwd-s3fs`

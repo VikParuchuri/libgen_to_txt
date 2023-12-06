@@ -3,7 +3,7 @@ from itertools import repeat
 
 import pymysql
 
-from settings import settings
+from libgen_to_txt.settings import settings
 import os
 import json
 
@@ -17,7 +17,7 @@ def try_write_metadata(fmd5, out_folder_path):
     try:
         write_metadata(fmd5, out_folder_path)
     except Exception as e:
-        print(f"Failed to process {fmd5}: {e}")
+        pass
 
 
 def write_metadata(fmd5, out_folder_path):

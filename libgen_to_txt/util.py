@@ -13,5 +13,4 @@ def find_filetype(fpath):
     elif "mobi" in mimetype:
         return "mobi"
     else:
-        print(f"Found nonstandard filetype {mimetype}")
         return "other"
