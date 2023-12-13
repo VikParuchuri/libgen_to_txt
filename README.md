@@ -6,6 +6,10 @@ The scripts use a seedbox to download the libgen torrents, copy them to your mac
 
 It currently only works for the libgen rs nonfiction section, but PRs welcome for additional compatibility.  It will cost about $300 to convert all of libgen rs nonfiction if you're using a cloud instance, and take about 1 week to process everything (bandwidth-bound).  You'll need 3TB of disk space.
 
+## Community
+
+[Discord](https://discord.gg//KuZwXNGnfH) is where we discuss future development.
+
 # Install
 
 This was only tested on Ubuntu 23.04 and Python 3.11.  It should work with Python 3.8+.
